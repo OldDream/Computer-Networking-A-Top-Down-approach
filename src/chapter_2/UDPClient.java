@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 public class UDPClient {
-    private static String hostname = "10.7.28.53";
+    private static String hostname = "100.134.79.57";
     private static int port = 6666;
 
     public static void main(String[] args) throws Exception {
