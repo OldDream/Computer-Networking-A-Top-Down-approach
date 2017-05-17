@@ -25,30 +25,36 @@ public class ProgrammingAssignment1 {
         requestMessageLine = inFromClient.readLine();
         StringTokenizer tokenizedLine = new StringTokenizer(requestMessageLine);
 
-        if (tokenizedLine.nextToken().equals("GET")) {
-            fileName = tokenizedLine.nextToken();
-            if (fileName.startsWith("/") == true) {
-                fileName = fileName.substring(1);
-                File file = new File(fileName);
-                int numOfBytes = (int) file.length();
+        try {
+            if (tokenizedLine.nextToken().equals("GET")) {
+                fileName = tokenizedLine.nextToken();
+                if (fileName.startsWith("/") == true) {
+                    fileName = fileName.substring(1);
+                    File file = new File(fileName);
+                    int numOfBytes = (int) file.length();
 
-                FileInputStream inFile = new FileInputStream(fileName);
-                byte[] fileInBytes = new byte[numOfBytes];
-                inFile.read(fileInBytes);
+                    FileInputStream inFile = new FileInputStream(fileName);
+                    byte[] fileInBytes = new byte[numOfBytes];
+                    inFile.read(fileInBytes);
 
-                outToClient.writeBytes("HTTP/1.0 200 Document Follows \r\n");
-                if (fileName.endsWith(".jpg"))
-                    outToClient.writeBytes("Content-Type:image/jpeg\r\n");
-                if (fileName.endsWith(".gif"))
-                    outToClient.writeBytes("Content-Type:image/gif\r\n");
-                outToClient.writeBytes("Content-Length: " + numOfBytes + "\r\n");
-                outToClient.writeBytes("\r\n");
-                outToClient.write(fileInBytes, 0, numOfBytes);
-                connectionSocket.close();
+                    outToClient.writeBytes("HTTP/1.0 200 Document Follows \r\n");
+                    if (fileName.endsWith(".jpg"))
+                        outToClient.writeBytes("Content-Type:image/jpeg\r\n");
+                    if (fileName.endsWith(".gif"))
+                        outToClient.writeBytes("Content-Type:image/gif\r\n");
+                    outToClient.writeBytes("Content-Length: " + numOfBytes + "\r\n");
+                    outToClient.writeBytes("\r\n");
+                    outToClient.write(fileInBytes, 0, numOfBytes);
+                    connectionSocket.close();
+                }
+                else {
+                    System.out.println("Bad Request Message.");
+                }
             }
-            else {
-                System.out.println("Bad Request Message.");
-            }
+        }
+        catch (Exception ex) {
+            outToClient.writeBytes("HTTP/1.0 404 Not Found");
+            connectionSocket.close();
         }
         listenSocket.close();
     }
